@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import warnings
 from sklearn.base import clone
-from itertools import combinations # permutations
+from itertools import combinations
 import scipy.special
 import random
 import pickle

@@ -1,7 +1,6 @@
 
 import os
-os.chdir('D:/ANDY/Documents/大學/研究所/論文/模型解釋/Shapley/Data Shapley/DataShapley-master')
-# os.chdir('C:/Users/Magic8763/Desktop/研究所/論文/模型解釋/Shapley/Data Shapley/DataShapley-master')
+# os.chdir()
 import time
 import numpy as np
 import pandas as pd
