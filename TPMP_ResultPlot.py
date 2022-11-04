@@ -1,6 +1,6 @@
 
 import os
-# os.chdir()
+os.chdir('D:/ANDY/Documents/大學/研究所/論文/模型解釋/Shapley/Data Shapley/DataShapley-master')
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -293,17 +293,24 @@ CR_df = CRplot(fname, batch = batch, search = search, item = 1, fontsize = 14)
 
 # In[分配效率繪圖]:
 
-def CRplot2(fname, search = '', fontsize = 12):
-    methods = ['Base', 'MaxImprove']
+def CRplot2(fname, search = '', cross = True, fontsize = 12):
+    if cross:
+        methods = ['Base', 'MaxImprove']
+    else:
+        methods = ['BFS', 'DFS']
     k_list = np.arange(50, 251, step = 50)
     idxlist = list(k_list) + ['MAX']
     loc = [np.arange(0, len(idxlist)*3, step = 3)]
     loc += [np.arange(2, len(idxlist)*3, step = 3)]
     CR_df = pd.DataFrame(index = idxlist)
-    for m in range(0, len(methods)):
-        for f in range(0, len(search)):
-            df = pd.read_csv(fname+search[f]+'.csv', index_col = 0).T
-            CR_df[methods[m]+search[f]] = df.iloc[loc[m], 6].values
+    for f in range(0, len(search)):
+        df = pd.read_csv(fname+search[f]+'.csv', index_col = 0).T
+        for m in range(0, len(methods)):
+            if cross:
+                CR_df[methods[m]+search[f]] = df.iloc[loc[m], 6].values
+            else:
+                CR_df[methods[f]] = df.iloc[loc[m], 6].values
+                break
     img = CR_df.plot(kind = 'line', style = '.-', logy = True, marker = 'o', fontsize = fontsize-2)
     img.set_title('Distribution Efficiency', fontsize = fontsize)
     img.set_ylabel('Runtime (s)', fontsize = fontsize)
@@ -315,7 +322,8 @@ def CRplot2(fname, search = '', fontsize = 12):
 
 search = [' (BFS)', ' (DFS)']
 fname = 'Optimizing Effectiveness Test [pNormal disp=0.0]'
-CRplot2(fname, search = search, fontsize = 14)
+# CRplot2(fname, search = search, cross = True, fontsize = 14)
+df = CRplot2(fname, search = search, cross = False, fontsize = 14)
 
 # In[過濾結果繪圖]:
 
