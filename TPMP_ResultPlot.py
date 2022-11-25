@@ -495,11 +495,14 @@ DBplot2(fname, search = search, k = 0, fontsize = 14)
 # In[定價舉例]:
 
 df = pd.DataFrame()
-df['v(.)'] = [10, 20, 30, 40, 50]
+# df['v(.)'] = [10, 20, 30, 40, 50]
+df['budget'] = [10, 20, 30, 40, 50]
 df.index = [0.6, 0.64, 0.68, 0.72, 0.76]
-df['mp(.)'] = [10, 15, 15, 20, 30]
+# df['mp(.)'] = [10, 15, 15, 20, 30]
+df['price'] = [10, 15, 15, 20, 30]
 ineq = False
 itr = False
+inc = 0
 
 # In[定價舉例]:
 
@@ -510,6 +513,7 @@ df['q2'] = [0, 15, 20, 0, 35, 35, 0]
 df['q3'] = [0, 0, 0, 0, 40, 40, 40]
 ineq = True
 itr = False
+inc = 0
 
 # In[定價舉例]:
 
@@ -520,6 +524,7 @@ df['Round2'] = [10, 10, 10, 20, 20, 60]
 df['Round3'] = [10, 10, 10, 20, 20, 20]
 ineq = True
 itr = True
+inc = 0
 
 # In[定價舉例]:
 
@@ -530,64 +535,113 @@ df['q3'] = [0, 0, 0, 30, 30, 30, 30]
 df['q2'] = [0, 15, 20, 0, 35, 35, 0]
 ineq = True
 itr = False
+inc = 0
 
 # In[定價舉例]:
 
-def PSplot(df, ineq = False, itr = False, fontsize = 12):
+df = pd.DataFrame(index = [0.6, 0.62, 0.64, 0.72])
+df['v'] = [10, 15, 20, 40]
+df['q1'] = [10, 0, 10, 0]
+df['q2'] = [0, 15, 20, 35]
+ineq = True
+itr = False
+inc = 0
+
+# In[定價舉例]:
+
+df = pd.DataFrame(index = [0.6, 0.62, 0.64, 0.72])
+df['v'] = [10, 15, 20, 40]
+ineq = True
+itr = True
+
+df['mp1'] = [10, 15, 10, 40]
+df['mp2'] = [10, 10, 10, 40]
+df['mp3'] = [10, 10, 10, 20]
+inc = 1
+
+# df['mpA'] = [10, 15, 20, 35]
+# df['mpB'] = [10, 15, 10, 35]
+# df['mpC'] = [10, 10, 10, 35]
+# inc = 2
+
+# In[定價舉例]:
+
+def vfun(price):
+    return (price-10)/250+0.6 if price >= 10 else 0.6
+
+def PSplot(df, ineq = False, itr = False, inc = 0, fontsize = 12):
     title = list(df.columns)
     acc = list(df.index)
-    C = ['C0', 'C1', 'DarkGreen', 'C3']
+    if inc == 0:
+        C = ['C0', 'C1', 'DarkGreen', 'C3'] # mp123適用
+    elif inc == 1:
+        C = ['C0', 'C1', 'C1', 'DarkGreen', 'C3']
+    elif inc == 2:
+        C = ['C0', 'C1', 'DarkGreen', 'DarkGreen', 'C3']
+    round_str = ['', '1st', '2nd', '3rd', '4th']
+    round_idx = 0
+    letters = ""
+    for c in range(0, len(df)):
+        letters += chr(97+c)
     for i in range(0, df.shape[1]):
         if itr:
             if ineq:
-                name = 'CIP'
                 if i == 0:
-                    img = df.plot(kind = 'line', y = title[0], color = C[0], style = '.-', marker = 'o', fontsize = fontsize-2)
-                    img.set_title('The Initial Price of the Models', fontsize = fontsize)
-                    img.legend(fontsize = fontsize-2)
+                    headtitle = 'The Initial Price of the Models'
                 else:
-                    img = df.plot(kind = 'line', y = title[0], color = C[0], style = '--', fontsize = fontsize-2)
-                    img1 = df.plot(kind = 'line', y = title[i], color = C[i], ax = img, style = '.-', marker = 'o', fontsize = fontsize-2)
-                    img.set_title('Iterative Process of CIP', fontsize = fontsize)
-                    img.legend(labels = ['v(.)', 'mp(.)'], fontsize = fontsize-2)
+                    if C[i-1] != C[i]:
+                        round_idx += 1
+                    headtitle = 'Iterative Process of CIP (' + round_str[round_idx] + ' round)'
+                name = 'CIP'
+                img = df.plot(kind = 'line', y = title[0], color = C[0], style = '--', fontsize = fontsize-2)
+                img1 = df.plot(kind = 'line', y = title[i], color = C[i], ax = img, style = '.-', marker = 'o', fontsize = fontsize-2)
+                img.set_title(headtitle, fontsize = fontsize)
+                # img.legend(labels = ['v(.)', 'mp(.)'], fontsize = fontsize-2)
+                img.legend(labels = ['v', 'mp'], fontsize = fontsize-2)
+                for idx, yloc in enumerate(df[title[i]]):
+                    img.annotate(letters[idx], (acc[idx], yloc), xytext = (-5, 12), textcoords = 'offset points',
+                                 family = 'sans-serif', fontsize = fontsize, color = 'C3')
         else:
+            if i > 0:
+                break
             if ineq:
                 name = 'ICS'
-                if i == 0:
-                    img = df.plot(kind = 'line', y = title[0], color = C[0], style = '--', fontsize = fontsize-2)
-                    img1 = df.replace(0, np.nan).plot(kind = 'line', y = title[1:], color = C[1:], ax = img, style = '-', linewidth = 3.0,  fontsize = fontsize-2)
-                    img.set_title('The Initial State of CIP', fontsize = fontsize)
-                elif i == 1:
-                    img = df.plot(kind = 'line', y = title[0], color = C[0], style = '-', fontsize = fontsize-2)
-                    img1 = df.replace(0, np.nan).plot(kind = 'line', y = title[1:], color = C[1:], ax = img, style = '.-', marker = 'o', fontsize = fontsize-2)
-                    img.set_title('Inequality Constraints', fontsize = fontsize)
-                    for q in range(1, len(title)):
-                        for idx in range(0, len(acc)):
-                            if df[title[q]].iloc[idx] > 0: 
-                                img.vlines(x = acc[idx], ymin = df[title[q]].iloc[idx], ymax = df[title[0]].iloc[idx], color = C[q], linestyle = ':', lw = 2)
-                else:
-                    break
+                img = df.plot(kind = 'line', y = title[0], color = C[0], style = '-', fontsize = fontsize-2)
+                img1 = df.replace(0, np.nan).plot(kind = 'line', y = title[1:], color = C[1:], ax = img, style = '.', marker = 'o', fontsize = fontsize-2)
+                # img.set_title('The Initial State of CIP', fontsize = fontsize)
+                # img.set_title('Inequality Constraints', fontsize = fontsize)
+                img.set_title('Pricing Constraints', fontsize = fontsize)
+                for q in range(1, len(title)):
+                    for idx in range(0, len(acc)):
+                        if df[title[q]].iloc[idx] > 0:
+                            # img.vlines(x = acc[idx], ymin = df[title[q]].iloc[idx], ymax = df[title[0]].iloc[idx], color = C[q], linestyle = ':', lw = 2)
+                            leftloc = acc[0]
+                            if q == 2:
+                                leftloc = vfun(df[title[q]].iloc[idx])
+                            img.hlines(y = df[title[q]].iloc[idx], xmin = leftloc, xmax = acc[idx], color = C[q], linestyle = ':', lw = 2)
+                            img.annotate(letters[idx], (acc[idx], df[title[q]].iloc[idx]), xytext = (-5, 12),
+                                         textcoords = 'offset points', family = 'sans-serif', fontsize = fontsize, color = 'C3')
             else:
                 name = 'MPLoss'
-                if i == 0:
-                    img = df.plot(kind = 'line', y = title, color = C[0:len(title)], style = '.-', marker = 'o', fontsize = fontsize-2)
-                    img.set_title('Price Loss', fontsize = fontsize)
-                    for idx in range(0, len(acc)):
-                        img.vlines(x = acc[idx], ymin = df[title[-1]].iloc[idx], ymax = df[title[0]].iloc[idx], color = 'r', linestyle = ':', lw = 2)
-                else:
-                    break
+                img = df.plot(kind = 'line', y = title, color = C[0:len(title)], style = '.-', marker = 'o', fontsize = fontsize-2)
+                img.set_title('Price Loss', fontsize = fontsize)
+                for idx in range(0, len(acc)):
+                    img.vlines(x = acc[idx], ymin = df[title[-1]].iloc[idx], ymax = df[title[0]].iloc[idx], color = 'r', linestyle = ':', lw = 2)
             img.legend(fontsize = fontsize-2)
         img.set_xticks(list(df.index))
-        img.set_xlabel('Accuracy', fontsize = fontsize)
+        img.set_xlabel('Prediction Accuracy', fontsize = fontsize)
         img.set_xticks(df.index)
-        img.set_ylabel('Price', fontsize = fontsize)
-        plt.setp(img.get_xticklabels(), rotation = 45)
+        img.set_ylabel('Model Price', fontsize = fontsize)
+        # plt.setp(img.get_xticklabels(), rotation = 45)
         plt.show()
         if df.shape[1] > 1:
-            img.figure.savefig(name + '_' + str(i) + '.jpg', bbox_inches = 'tight', dpi = 300)
+            num_str = str(i)
+            if inc > 1:
+                num_str += '_dec'
+            img.figure.savefig(name + '_' + num_str + '.jpg', bbox_inches = 'tight', dpi = 300)
         else:
             img.figure.savefig(name + '.jpg', bbox_inches = 'tight', dpi = 300)
         img.remove()
 
-PSplot(df, ineq = ineq, itr = itr, fontsize = 14)
+PSplot(df, ineq = ineq, itr = itr, inc = inc, fontsize = 14)
 
