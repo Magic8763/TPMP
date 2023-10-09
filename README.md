@@ -21,10 +21,12 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 - D_acc.pkl: 預設的市場調查結果(需求分布函數)
 
 **Data**
-- x_raw101.csv, y_raw101.csv: 測試功能所用的模擬資料
-- img_features_?.pkl: [cifar-10](https://www.cs.toronto.edu/~kriz/cifar.html)圖片資料集，預先依圖片標籤分為10個pkl檔儲存，各自包含5000筆訓練樣本和1000筆測試樣本
-- img_name_?.pkl: 與前者對應的原始圖片名稱
+- x_raw101.csv, y_raw101.csv: 測試功能的模擬資料
 
+## Dataset
+- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)圖片資料集
+  - 包含10個類別各5000筆訓練樣本和1000筆測試樣本
+  - 每個樣本為32x32的彩色圖片，即每張圖片具有3072個特徵維度
 
 ## Authors
 * **Chih-Chien Cheng** - (categoryv@cycu.org.tw)
