@@ -22,7 +22,7 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 
 **Data**
 - x_raw101.csv, y_raw101.csv: 測試功能所用的模擬資料
-- img_feature_?.pkl: [cifar-10](https://www.cs.toronto.edu/~kriz/cifar.html)圖片資料集，預先依圖片標籤分為10個pkl檔儲存，各自包含5000筆訓練樣本和1000筆測試樣本
+- img_features_?.pkl: [cifar-10](https://www.cs.toronto.edu/~kriz/cifar.html)圖片資料集，預先依圖片標籤分為10個pkl檔儲存，各自包含5000筆訓練樣本和1000筆測試樣本
 - img_name_?.pkl: 與前者對應的原始圖片名稱
 
 
