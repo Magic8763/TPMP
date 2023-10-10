@@ -8,13 +8,10 @@ import TPMP_ModelTraining as MT
 
 img_size = 32*32
 clf = MT.return_model('logistic', tol = 0.1, solver = 'liblinear', n_jobs = 1) # 以logistic建立分類模型
-dirN = 'cifar-10-batches-py/Classification'
 
 def ReadImage(filename): # 讀原始檔
-    rawdata = dict()
     x_raw = np.zeros((0, 3072), int)
-    y_batch = list()
-    imgName = list()
+    rawdata, y_batch, imgName = {}, [], []
     for file in filename:
         with open(file, 'rb') as f:
             rawdata = pickle.load(f, encoding = 'bytes')
@@ -24,44 +21,40 @@ def ReadImage(filename): # 讀原始檔
     y_raw = np.array(y_batch)
     return x_raw, y_raw, imgName
 
-def RW_Segment(x_raw = np.zeros(0, int), pName = list(), wtire = False, date = 'today', batch = '0'): # 讀寫分類檔
-    global dirN
-    dir_name = dirN + '/' + date
+def RW_Segment(x_raw = np.zeros(0, int), pName = [], wtire = False, date = 'today', batch = '0'): # 讀寫分類檔
+    dir_name = 'data'
+    if date:
+        dir_name += '/'+date
+    if batch:
+        dir_name += '/'+batch
     if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-    dir_name += '/' + batch
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name) 
+        os.makedirs(dir_name)
     if wtire:
-        with open(dir_name+'/x_raw_'+batch, 'wb') as file:
+        with open(dir_name+'/img_features_'+batch+'.pkl', 'wb') as file:
             pickle.dump(x_raw, file)
-        with open(dir_name+'/img_name_'+batch, 'wb') as file:
+        with open(dir_name+'/img_name_'+batch+'.pkl', 'wb') as file:
             pickle.dump(pName, file)
     else:
-        with open(dir_name+'/x_raw_'+batch, 'rb') as file:
+        with open(dir_name+'/img_features_'+batch+'.pkl', 'rb') as file:
             xSegment = pickle.load(file)
-            print('x_raw_'+batch,'Size =', len(xSegment))
-        with open(dir_name+'/img_name_'+batch, 'rb') as file:
+            print('img_features_'+batch, 'Size =', len(xSegment))
+        with open(dir_name+'/img_name_'+batch+'.pkl', 'rb') as file:
             pName = pickle.load(file)
-            print('imgName_'+batch,'Size =', len(pName))
+            print('img_name_'+batch, 'Size =', len(pName))
         return xSegment, pName
 
 def SegmentSave(x_raw, y_raw, imgName, date = 'today'): # 依分類寫檔
-    global img_size
-    idxlist = list()
-    for i in range(0, 10):
-        idxlist += [np.zeros(0, int)]
+    idxlist = [np.zeros(0, int) for _ in range(0, 10)]
     for img_idx in range(0, len(y_raw)):
         idxlist[y_raw[img_idx]] = np.append(idxlist[y_raw[img_idx]], img_idx)
     for img_loc in range(0, len(idxlist)):
         pixel = x_raw[idxlist[img_loc],:]
-        pName = list()
+        pName = []
         for img_idx in idxlist[img_loc]:
-            pName += [imgName[img_idx]]
+            pName.extend([imgName[img_idx]])
         RW_Segment(pixel, pName, wtire = True, date = date, batch = str(img_loc))
 
 def GroupingRules(x_train, y_train): # 依標籤分組資料集
-    global img_size
     x_raw = np.zeros((0, img_size*3), float)
     y_raw = np.zeros(0, int)
     train_size = np.size(x_train, axis = 0) # 訓練: 鳥2 x1500, 飛機0 x750, 船8 x750; 測試: 鳥500, 飛機250, 船250; 是鳥非鳥的二元分類
@@ -94,35 +87,35 @@ def GroupingRules(x_train, y_train): # 依標籤分組資料集
     return x_raw, y_raw
 
 def RW_RawData(x_raw = np.zeros(0, int), y_raw = np.zeros(0, int), wtire = False, date = 'today', batch = '0', acc = 0.0): # 讀寫分組資料集
-    global dirN
-    dir_name = dirN + '/' + date
+    dir_name = 'var'
+    if date:
+        dir_name += '/'+date
+    if batch:
+        dir_name += '/m'+batch
     if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-    dir_name += '/m' + batch
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name) 
+        os.makedirs(dir_name)
     if wtire:
-        with open(dir_name+'/x_raw', 'wb') as file:
+        with open(dir_name+'/x_raw.pkl', 'wb') as file:
             pickle.dump(x_raw, file)
-        with open(dir_name+'/y_raw', 'wb') as file:
+        with open(dir_name+'/y_raw.pkl', 'wb') as file:
             pickle.dump(y_raw, file)
-        with open(dir_name+'/acc', 'wb') as file:
+        with open(dir_name+'/acc.pkl', 'wb') as file:
             pickle.dump(acc, file)
     else:
-        with open(dir_name+'/x_raw', 'rb') as file:
+        with open(dir_name+'/x_raw.pkl', 'rb') as file:
             xSegment = pickle.load(file)
-            print('x_raw Size =', len(xSegment))
-        with open(dir_name+'/y_raw', 'rb') as file:
+        with open(dir_name+'/y_raw.pkl', 'rb') as file:
             ySegment = pickle.load(file)
-            print('y_raw Size =', len(ySegment))
-        with open(dir_name+'/acc', 'rb') as file:
+        with open(dir_name+'/acc.pkl', 'rb') as file:
             acc = pickle.load(file)
-            print('m' + batch, 'acc =', acc)
+        print('m'+batch+': x_size = ', len(xSegment),
+              ', y_size = ', len(ySegment),
+              ', acc = ', acc, sep='')
         return xSegment, ySegment, acc
 
 def SegmentSplit(times = 1, date = 'today', labels = [], train_batch_size = [], test_batch_size = [], normalize = False): # 分組資料集分割
     test_idx0 = 5000
-    raw = 'Raw'
+    raw = 'img'
     for i in range(0, len(labels)):
         if i == 0:
             x_raw, _ = RW_Segment(batch = str(labels[i]), date = raw)

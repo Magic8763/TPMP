@@ -5,7 +5,7 @@ from copy import deepcopy as dcp
 import math
 import time
 from sklearn.metrics import r2_score
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # pip install matplotlib
 import matplotlib.ticker as mtick
 from scipy.stats import norm
 from scipy.optimize import minimize
@@ -98,11 +98,10 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         self.TB = kwargs.get('TB', 0.002) # 等價約束的容許邊界(準確度差值邊界)
         self.IneqFilter = kwargs.get('IneqFilter', True) # 是否需要過濾多餘不等式
         if ReadSurvey:
-            dir_name = kwargs.get('dir_name', 'cifar-10-batches-py/Classification')
-            date = kwargs.get('date', 'Market Adjustment function')
-            self.V_acc = MT.RW_ClassObj(dirN = dir_name, name = 'V_acc', date = date)
+            dir_name = kwargs.get('dir_name', 'var')
+            self.V_acc = MT.RW_ClassObj(dir_name = dir_name, name = 'V_acc')
             self.V_acc_og = dcp(self.V_acc)
-            self.D_acc = MT.RW_ClassObj(dirN = dir_name, name = 'D_acc', date = date)
+            self.D_acc = MT.RW_ClassObj(dir_name = dir_name, name = 'D_acc')
         else:
             Vacc_general = kwargs.get('Vacc_general', True)
             Vacc_growthRate = kwargs.get('Vacc_growthRate', 0.1)

@@ -498,9 +498,9 @@ def RunMS(ClassObj, search = 0, SEQ = True, RD = False, threshold = 0, k = 1, re
     else:
         bf_cmb, bf_cmb_acc, bf_cmb_len, bf_utility, bf_marginal, runtime = ClassObj.RandomPick(k = k, reboot = reboot) # 隨機篩選模型
     ClassObj.plot()
-    print('Trained Models:', ClassObj.trained_count)
+    print('\nTrained Models:', ClassObj.trained_count)
     if not iterate:
-        print('\n[Model Selection] ML_', len(bf_cmb), ': ', runtime, ' sec.\n', sep = '')
+        print('[Model Selection] ML_', len(bf_cmb), ': ', runtime, ' sec.\n', sep = '')
     return bf_cmb, bf_cmb_acc, bf_cmb_len, bf_utility, bf_marginal, runtime
 
 # In[計算訓練集的真實SV]:
@@ -509,25 +509,24 @@ def RunSV(ClassObj, getAC = False):
     starttime = time.time()
     fm_vals, fm_vals_uf, fm_acc_count = ClassObj.Get_ShapleyValue(getAC = getAC)
     runtime = time.time() - starttime
-    print('Trained Models:', ClassObj.trained_count)
-    print('\n[True Shapley]: ', runtime, ' sec.\n', sep='')
+    print('\nTrained Models:', ClassObj.trained_count)
+    print('[True Shapley]: ', runtime, ' sec.\n', sep='')
     return fm_vals, fm_vals_uf, fm_acc_count
 
 # In[儲存目前的類別物件]:
 
-def RW_ClassObj(obj = None, wtire = False, dirN = 'cifar-10-batches-py/Classification', name = 'ClassObj', date = 'today', batch = ''):
-    dir_name = dirN + '/' + date + '/'
+def RW_ClassObj(obj = None, wtire = False, dir_name = '', name = 'ClassObj', date = '', batch = ''):
+    if date:
+        dir_name += '/'+date
+    if batch:
+        dir_name += '/'+batch
     if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-    if len(batch) > 0:
-        dir_name += batch + '/'
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name) 
+        os.makedirs(dir_name)
     if wtire:
-        with open(dir_name + name, 'wb') as file:
+        with open(dir_name+'/'+name+'.pkl', 'wb') as file:
             pickle.dump(obj, file)
     else:
-        with open(dir_name + name, 'rb') as file:
+        with open(dir_name+'/'+name+'.pkl', 'rb') as file:
             obj = pickle.load(file)
         return obj
 
