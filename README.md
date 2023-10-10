@@ -17,8 +17,8 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 - TPMP_ResultPlot.py: 繪製實驗結果
 
 **Variable**
-- V_acc.pkl: 預設的市場調查結果(價格上限函數)
-- D_acc.pkl: 預設的市場調查結果(需求分布函數)
+- V_acc.pkl: 預設的市場調查結果-模型價格上限
+- D_acc.pkl: 預設的市場調查結果-市場需求分布
 
 ## Dataset
 - [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) 圖片資料集 (python version, 163 MB)
