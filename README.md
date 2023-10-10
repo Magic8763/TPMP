@@ -11,7 +11,7 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 
 **Program**
 - TPMP_Build.py: 資料前處理，包含資料樣本分組與訓練模型實例
-- TPMP_main.py: 程式主介面，用於測試各函數的執行功能是否正常
+- TPMP_main.py: 程式主介面，以範例實驗測試函數功能是否正常
 - TPMP_Experiments.py: 完整的迭代定價實驗
 - TPMP_Preprocessing.py: 前處理相關功能
 - TPMP_ModelTraining.py: 模型訓練相關功能
