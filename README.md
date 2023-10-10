@@ -6,7 +6,7 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 ## Prerequisites
 - Python3, NumPy, Pandas, Scikit-learn, Matplotlib, Pickle
 
-## File Description
+## Description
 **Program**
 - TPMP_Build.py: 資料前處理，包含資料樣本分組與訓練模型實例
 - TPMP_main.py: 程式主介面，以範例實驗測試函數功能是否正常
