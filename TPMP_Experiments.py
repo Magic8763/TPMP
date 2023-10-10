@@ -1,6 +1,6 @@
 
 import os
-os.chdir('D:/ANDY/文件/大學/研究所/論文/總整理/程式碼/TPMP')
+# os.chdir()
 import time
 import numpy as np
 import pandas as pd
