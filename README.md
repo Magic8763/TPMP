@@ -23,7 +23,7 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 - `D_acc.pkl`: 預設的市場調查結果-市場需求分布
 
 ## Dataset
-- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) 圖片資料集 (python version, 163 MB)
+- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) 圖片資料集 (Python version, 163 MB)
   - 其包含10種類別各5000筆訓練樣本和1000筆測試樣本
   - 每個樣本為32x32的彩色圖片，即每張圖片具有3072個特徵維度
 - `x_raw101.csv`, `y_raw101.csv`
