@@ -9,6 +9,12 @@ A Framework of Predictive Model Pricing.
 
 Code for implementation of "A Framework of Two-phase Predictive Model Pricing for Revenue Maximization and Distribution Optimization".
 
+## Abstract
+
+
+## Showcase
+
+
 ## Prerequisites
 - Python3, NumPy, Pandas, Scikit-learn, Matplotlib
 
@@ -20,7 +26,7 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 - `TPMP_Preprocessing.py`: 前處理相關功能
 - `TPMP_ModelTraining.py`: 模型訓練相關功能，部分函數參考自 [Data Shapley: Equitable Valuation of Data for Machine Learning](https://github.com/amiratag/DataShapley)
 - `TPMP_Class.py`: TPMP 類別與函數
-- `TPMP_ResultPlot.py`: 繪製實驗結果
+- `TPMP_Plot.py`: 實驗結果繪圖
 
 **Variable**
 - `V_acc.pkl`: 預設的市場調查結果-模型價格上限
