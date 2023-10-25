@@ -35,51 +35,7 @@ def Monotone_Ineq_MinDiff(wm1, wm2, minC): # 單調性不等式(單調差距至�
     return MT_Ineq_MinDiff
 
 def wSum(Di_list, num = 1): # 貢獻正規化等式
-    def Sum1(x):
-        return (x[Di_list[0]] - num) 
-    def Sum2(x):
-        return (x[Di_list[0]] + x[Di_list[1]] - num)
-    def Sum3(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] - num) 
-    def Sum4(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] - num)
-    def Sum5(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] + x[Di_list[4]] - num)
-    def Sum6(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] + x[Di_list[4]] + 
-                x[Di_list[5]] - num)
-    def Sum7(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] + x[Di_list[4]] + 
-                x[Di_list[5]] + x[Di_list[6]] - num) 
-    def Sum8(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] + x[Di_list[4]] + 
-                x[Di_list[5]] + x[Di_list[6]] + x[Di_list[7]] - num)
-    def Sum9(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] + x[Di_list[4]] + 
-                x[Di_list[5]] + x[Di_list[6]] + x[Di_list[7]] + x[Di_list[8]] - num) 
-    def Sum10(x):
-        return (x[Di_list[0]] + x[Di_list[1]] + x[Di_list[2]] + x[Di_list[3]] + x[Di_list[4]] + 
-                x[Di_list[5]] + x[Di_list[6]] + x[Di_list[7]] + x[Di_list[8]] + x[Di_list[9]] - num)
-    if len(Di_list) == 1:
-        return Sum1
-    elif len(Di_list) == 2:
-        return Sum2
-    elif len(Di_list) == 3:
-        return Sum3
-    elif len(Di_list) == 4:
-        return Sum4
-    elif len(Di_list) == 5:
-        return Sum5
-    elif len(Di_list) == 6:
-        return Sum6
-    elif len(Di_list) == 7:
-        return Sum7
-    elif len(Di_list) == 8:
-        return Sum8
-    elif len(Di_list) == 9:
-        return Sum9
-    elif len(Di_list) == 10:
-        return Sum10
+    return lambda x: (sum([x[i] for i in Di_list])-num)
 
 class Twophase_Predictive_Model_Pricing(object): # TPMP Class
     def __init__(self, cmb, acc, lenGroup, utility, marginal): # 載入版本模型
@@ -97,7 +53,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         self.acc_base = kwargs.get('acc_base', 0.5) # 定價起始點
         self.TB = kwargs.get('TB', 0.002) # 等價約束的容許邊界(準確度差值邊界)
         self.IneqFilter = kwargs.get('IneqFilter', True) # 是否需要過濾多餘不等式
-        if ReadSurvey:
+        if ReadSurvey: # 採用預設的市場調查函數
             dir_name = kwargs.get('dir_name', 'var')
             self.V_acc = MT.RW_ClassObj(dir_name = dir_name, name = 'V_acc')
             self.V_acc_og = dcp(self.V_acc)
@@ -273,7 +229,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         self.acc_demand = self.D_acc[acc_set]
 
     def Set_accGroup(self): # 模型點依照其準確度分組
-        self.ML_accGroup = list()
+        self.ML_accGroup = []
         self.ML_accloc = np.zeros(len(self.ML_cmb), int)
         acc_range = np.argsort(self.ML_acc, axis = 0) # 準確度由小到大的模型點序列
         last_acc = -1 # 前一個刻度的準確度
@@ -298,10 +254,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
 
     def Expected_Revenue(self, x, total = True, weighted = True): # 計算預期收益
         if not weighted:
-            if total:
-                return sum(x)
-            else:
-                return x
+            return sum(x) if total else x
         elif total:
             r_total = 0
             for loc in range(0, len(self.ML_accGroup)):
@@ -427,7 +380,6 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
                 break
             paring = paring[:, np.where(paring[Minidx,] == 1)[0]] # 移除比對矩陣內該模型所參與過的不等式的欄位
             grouplen[self.ML_accloc[idxlist[Minidx]]] -= 1
-            # print('Ans:', ans[-1])
         return ans
 
     def MinCover(self, ineqlist, more_weight = False): # 最小覆蓋集 = 最多參與優先
@@ -462,7 +414,6 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
                 break
             paring = paring[:, np.where(paring[Maxidx,] == 0)[0]] # 移除比對矩陣內該模型所參與過的不等式的欄位
             grouplen[self.ML_accloc[idxlist[Maxidx]]] -= 1
-    #        print('Ans:', ans[-1])
         return ans
 
     def MaxImprove(self, ineqlist): # 最大可改進收益
@@ -495,17 +446,16 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             ans = np.append(ans, idxlist[Maxidx]) # 放進待移除清單
             paring = paring[:, np.where(paring[Maxidx,] == 0)[0]] # 移除比對矩陣內該模型所參與過的不等式的欄位
             grouplen[self.ML_accloc[idxlist[Maxidx]]] -= 1
-    #        print('Ans:', ans[-1])
         return ans
 
-    def Revenue_Imp(self, ineqlist, more_weight = False): # 可改進收益
+    def Revenue_Imp(self, ineqlist, more_weight = False): # 可改進收益, 移除障礙不等式
         if more_weight:
             cover = np.zeros(len(self.acc_budget), int)
             for ineq in ineqlist:
                 LBM_accloc = int(ineq[-2])+1
                 RBM_accloc = int(ineq[-1])+1
                 cover[LBM_accloc:RBM_accloc] += 1
-        unzip_ineq = list()
+        unzip_ineq = []
         for ineq in ineqlist:
             pGap = 0
             pCap = ineq[0]
@@ -560,10 +510,9 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             paring[:, rm_ineq_idx] = 0 # 移除比對矩陣內該模型所參與過的不等式的欄位
             cover[rm_ineq_idx, :] = 0
             accGroup_len[self.ML_accloc[Maxidx]] -= 1
-    #        print('Ans:', ans[-1])
         return ans
 
-    def Revenue_Imp_Union(self, ploss, ineq_idx, cover, accGroup_len): # 可改進收益(聯集)
+    def Revenue_Imp_Union(self, ploss, ineq_idx, cover, accGroup_len): # 可改進收益(聯集), 移除障礙不等式
         cover_sum = np.sum(cover, axis = 0)
         cover_ineq = np.sum(cover[ineq_idx,:], axis = 0)
         cover_real = np.where(cover_ineq > 0)[0]
@@ -609,14 +558,14 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             return np.around(cError, decimals = 3), c_ratio
 
     def RLoss(self, x): # 預期收益損失
-        return self.rMax - self.Expected_Revenue(x)
+        return self.rMax-self.Expected_Revenue(x)
 
     def MPLoss(self, x): # 目標函數: 模型總價損失
         fx = 0
         for j in range(0, len(self.ML_accGroup)):
             for idx in self.ML_accGroup[j]:
                 if self.acc_budget[j] > x[idx]:
-                    fx += self.acc_budget[j] - x[idx] # 模型的加權價格與價格上限之間的損失總合
+                    fx += self.acc_budget[j]-x[idx] # 模型的加權價格與價格上限之間的損失總合
         return fx
 
     def CError(self, x, mode = 0): # 目標函數: 回饋分布誤差
@@ -634,11 +583,11 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         EC = np.sum(EC_mt, axis = 0)
         AC = np.sum(AC_mt, axis = 0)
         if mode == 0:
-            return sum(abs(EC - AC))
+            return sum(abs(EC-AC))
         elif mode == 1:
-            return np.around(abs(EC - AC), decimals = 3), np.around(EC, decimals = 3), np.around(AC, decimals = 3)
+            return np.around(abs(EC-AC), decimals = 3), np.around(EC, decimals = 3), np.around(AC, decimals = 3)
         elif mode == 2:
-            return np.around(sum(EC) - sum(AC), decimals = 3)
+            return np.around(sum(EC)-sum(AC), decimals = 3)
         elif mode == 3:
             for i in range(0, self.X_size_og):
                 AC[i] = abs(EC[i] - AC[i])
@@ -674,10 +623,8 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         return removed_idx
 
     def Add_SM_Ineq(self, RmMode = 0, count = False): # 產生訓練集單調性不等式
-        const = list()
-        vioM = list()
-        total = 0
-        remaining = 0
+        const, vioM = [], []
+        total, remaining = 0, 0
         checked = np.zeros(len(self.ML_cmb), dtype = int) # 紀錄已檢查的模型點idx的矩陣
         for m2_j in range(0, len(self.ML_pmt_idx)): # 整個搜索建立在ML_pmt_idx結構之上
             for m2_i in range(0, len(self.ML_pmt_idx[m2_j])):
@@ -710,7 +657,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
                                     if RmMode > 0 and m2_accloc - m1_accloc > 1:
                                         removed_idx = self.Set_vio(removed_ineq)
                                         # if len(removed_idx) > 0:
-                                        if len(removed_idx) > 0 and self.ML_acc[m2_idx] - self.ML_acc[m1_idx] > self.TB:
+                                        if len(removed_idx) > 0 and self.ML_acc[m2_idx]-self.ML_acc[m1_idx] > self.TB:
                                             if RmMode <= 2:
                                                 vioM.append(removed_idx)
                                             elif RmMode >= 3 and self.ML_acc[m1_idx] < self.ML_acc[m2_idx]: # 子集準確度 > 超集準確度
@@ -727,10 +674,8 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         return const, vioM, total
 
     def Add_SA_Ineq(self, RmMode = 0, count = False): # 產生訓練集次可加性不等式
-        const = list()
-        vioM = list()
-        total = 0
-        remaining = 0
+        const, vioM = [], []
+        total, remaining = 0, 0
         paring = np.diag(np.diag(np.ones((len(self.ML_cmb), len(self.ML_cmb)), dtype=int))) # 紀錄已比對的模型點idx的矩陣
         for m1_j in range(0, len(self.ML_pmt_idx)): # 整個搜索建立在ML_pmt_idx結構之上
             for m1_i in range(0, len(self.ML_pmt_idx[m1_j])):
@@ -797,9 +742,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         return const, vioM, total
 
     def Add_AM_Ineq(self, count = False): # 產生準確度單調性不等式
-        const = list()
-        total = 0
-        preMax = 0
+        const, total, preMax = [], 0, 0
         for j in range(0, len(self.ML_accGroup)):
             for i in range(0, len(self.ML_accGroup[j])):
                 idxR = self.ML_accGroup[j][i]
@@ -820,7 +763,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         return const
 
     def Pricing_Ineq(self, LP = True, RmMode = 0, Get_RM_idxs = False): # 無套利不等式
-        const = list()
+        const = []
         ML_size = len(self.ML_cmb)
         while True:
     #    if True:
@@ -848,7 +791,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             return tuple(const)
 
     def Define_Bounds(self, PhMode = 1): # 定義邊界約束(LP決策變數的上下限), PhMode = 1: 兩階段LP-1, 2:兩階段LP-2
-        tp = list()
+        tp = []
         x = np.zeros(0, float)
         if PhMode == 1:
             for i in range(0, len(self.ML_cmb)): # 模型價格mp的邊界
@@ -880,11 +823,11 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             self.BasePrice = dcp(self.ML_price)
         r_total, r_ratio = self.RevenueRatio(self.ML_price)
         if iterate:
+            res = {'ML_price': self.ML_price, 'ML_price_full': self.ML_idx_Recovery(self.ML_price),
+                   'r_total': r_total, 'r_ratio': r_ratio, 'runtime_P1': runtime}
             if p2:
-                _, c_error, _, c_loss = self.LP_Distribution(cMax = r_total, iterate = iterate)
-                return self.ML_price, r_total, r_ratio, runtime, c_error, c_loss
-            else:
-                return self.ML_price, r_total, r_ratio, runtime
+                res.update(self.LP_Distribution(cMax = r_total, iterate = iterate))
+            return res
         else:
             print('\nArbitrage-free Pricing:', solver)
             print("Optimization problem: {}".format(solution.message)) # 優化是否成功
@@ -892,13 +835,13 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             print('Revenue Loss = {:.4f}'.format(self.RLoss(self.ML_price)))
             print('Total_Revenue: ', r_total, ' / ',  self.rMax, ' (', r_ratio, '%)', sep='')
             print('Pricing ML_', len(self.ML_cmb), ' P1: ', runtime, ' sec.', sep='')
+            res = {'ML_price': self.ML_price, 'ML_price_full': self.ML_idx_Recovery(self.ML_price)}
             if p2:
-                return self.LP_Distribution(cMax = r_total)
-            return self.ML_price, self.ML_idx_Recovery(self.ML_price)
+                res.update(self.LP_Distribution(cMax = r_total))
+            return res
 
-    def Distribution_Ineq(self): # 分配權重專用不等式
-        const = list()
-        tp = list()
+    def Distribution_Ineq(self): # 分配權重的專屬不等式
+        const, tp = [], []
         x = np.zeros(0, float)
         for g in range(0, len(self.ML_accGroup)):
             for mj in self.ML_accGroup[g]:
@@ -929,7 +872,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         LossFun = self.CError
         Total_Const, bnds, xIni = self.Distribution_Ineq()
         solution = minimize(fun = LossFun, x0 = xIni, method = solver, bounds = bnds, constraints = Total_Const, options = options)
-        runtime = time.time() - starttime
+        runtime = time.time()-starttime
         xOpt = solution.x
         cDiff = LossFun(xOpt, 0)
         cLoss = LossFun(xOpt, 2)
@@ -938,7 +881,8 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         R2Score = -self.CError_R2Score(xOpt, perc = True)
         if iterate:
             _, EC, AC = LossFun(xOpt, 1)
-            return EC, AC, c_error, runtime, R2Score, cAvgError
+            return {'EC': EC, 'AC': AC, 'c_error': c_error, 'cLoss': cLoss,
+                    'runtime_P2': runtime, 'R2Score': R2Score, 'cAvgError': cAvgError}
         else:
             print('\nDistribution Optimization:', solver)
             # print('Optimization problem: {}'.format(solution.message)) # 優化是否成功
@@ -948,11 +892,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             print('R2(EC, AC) = {:.4f}'.format(R2Score))
             print('Compensation Error: ', cDiff, ' / ',  cMax, ' (', c_error, '%)', sep='')
             print('Distribution ML', len(self.ML_cmb), ' P2: ', runtime, ' sec.', sep='')
-            if len(self.ML_price) < self.ML_size_og:
-                xOpt = np.append(self.ML_idx_Recovery(self.ML_price), xOpt)
-            else:
-                xOpt = np.append(self.ML_price, xOpt)
-            return xOpt
+            return {'ML_distribution': xOpt}
 
     def Get_MaxP(self): # 價格函數初始化(模型價格設為價格上限)
         MaxP = np.zeros(len(self.ML_cmb), float)
@@ -1005,14 +945,13 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         starttime = time.time()
         IneqNum = np.zeros(5, int)
         if RmMode == 0 or RmMode == 5:
-    #        sm_ineq = list()
-    #        sa_ineq = list()
+    #        sm_ineq, sa_ineq = [], []
             sm_ineq, _, IneqNum[1] = self.Add_SM_Ineq(-1)
             sa_ineq, _, IneqNum[2] = self.Add_SA_Ineq(-1)
             if sort_ineq:
-                ineqlist = list(sorted(sm_ineq + sa_ineq, key = lambda x: (x[0], x[-2])))
+                ineqlist = list(sorted(sm_ineq+sa_ineq, key = lambda x: (x[0], x[-2])))
             else:
-                ineqlist = sm_ineq + sa_ineq
+                ineqlist = sm_ineq+sa_ineq
             if RmMode == 0:
                 xOpt, itr_t = self.Constraint_based_Iterative_Pricing(ineqlist)
                 self.BasePrice = dcp(xOpt)
@@ -1023,24 +962,25 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             sm_ineq, _, IneqNum[1] = self.Add_SM_Ineq(-1)
             sa_ineq, _, IneqNum[2] = self.Add_SA_Ineq(-1)
             if sort_ineq:
-                ineqlist = list(sorted(sm_ineq + sa_ineq, key = lambda x: x[0]))
+                ineqlist = list(sorted(sm_ineq+sa_ineq, key = lambda x: x[0]))
             else:
-                ineqlist = sm_ineq + sa_ineq
+                ineqlist = sm_ineq+sa_ineq
             xOpt, itr_t = self.Constraint_based_Iterative_Pricing(ineqlist)
             if RmMode == 5 and len(self.BasePrice) == 0:
                 itr_t += itr_t2
-        runtime = time.time() - starttime
+        runtime = time.time()-starttime
         self.ML_price = np.around(xOpt, decimals = 3)
         r_total, r_ratio = self.RevenueRatio(self.ML_price)
         if iterate:
             IneqNum[0] = len(self.Add_AM_Ineq())
             IneqNum[3] = len(sm_ineq)
             IneqNum[4] = len(sa_ineq)
+            res = {'ML_price': self.ML_price, 'ML_price_full': self.ML_idx_Recovery(self.ML_price),
+                   'r_total': r_total, 'r_ratio': r_ratio,
+                   'runtime_P1': runtime, 'IneqNum': IneqNum, 'itr_t': itr_t}
             if p2:
-                EC, AC, c_error, runtime_P2, R2Score, c_AvgError = self.LP_Distribution(cMax = r_total, iterate = iterate)
-                return self.ML_price, r_total, r_ratio, runtime, IneqNum, itr_t, EC, AC, c_error, runtime_P2, R2Score, c_AvgError
-            else:
-                return self.ML_price, r_total, r_ratio, runtime, IneqNum, itr_t
+                res.update(self.LP_Distribution(cMax = r_total, iterate = iterate))
+            return res
         else:
             print('\nArbitrage-free Pricing: CIP')
             print('Iterations =', itr_t)
@@ -1048,9 +988,10 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
             print('Revenue Loss = {:.4f}'.format(self.RLoss(self.ML_price)))
             print('Total_Revenue: ', r_total, ' / ',  self.rMax, ' (', r_ratio, '%)', sep = '')
             print('Pricing ML', len(self.ML_cmb), ' P1: ', runtime, ' sec.', sep = '')
+            res = {'ML_price': self.ML_price, 'ML_price_full': self.ML_idx_Recovery(self.ML_price)}
             if p2:
-                return self.LP_Distribution(cMax = r_total)
-            return self.ML_price, self.ML_idx_Recovery(self.ML_price)
+                res.update(self.LP_Distribution(cMax = r_total))
+            return res
 
     def DFplot(self, df, fontsize = 14):
         name = list(df.columns)
@@ -1061,7 +1002,6 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         img.set_ylabel('Price', fontsize = fontsize)
         img.set_title('Price of Version Models', fontsize = fontsize)
         img.legend(loc = 'best', fontsize = fontsize-2)
-        # plt.fill_between(df['Acc'], df['Budget'], df['Arbitrage-free Price'], facecolor = 'green', alpha = 0.3, interpolate = True)
         plt.show()
         img.figure.savefig('Model_Pricing_Curve.jpg', bbox_inches = 'tight')
         img.remove()
@@ -1080,7 +1020,7 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         return self.DFplot(df = xOptDF, fontsize = fontsize)
 
     def CIP_Pricing_RM1by1(self, RmMode = 4, p2 = False): # 逐項移除模型並定價
-        xOpt = self.CIP_Pricing(RmMode = 0)
+        xOpt0 = self.CIP_Pricing(RmMode = 0)
         if RmMode > 0:
             ans = self.Pricing_Ineq(LP = False, RmMode = RmMode, Get_RM_idxs = True)
             sorted_ans = np.sort(ans)[::-1]
@@ -1089,19 +1029,21 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
                 rl = list(sorted_ans[0:i])
                 self.DelML(rl)
                 print('Latest Removed Model: m', rl[-1], ' = ',  self.ML_cmb_og[rl[-1]], sep = '')
-                _, r_total, r_ratio, _, _, _ = self.CIP_Pricing(RmMode = 0, iterate = True)
-                print('[P1]: Rr = ', r_total, ' / ',  self.rMax, ' (', r_ratio, '%)', sep = '')
+                xOpt = self.CIP_Pricing(RmMode = 0, iterate = True)
+                print('[P1]: Rr = ', xOpt['r_total'], ' / ',  self.rMax, ' (', xOpt['r_ratio'], '%)', sep = '')
                 if p2:
-                    EC, AC, c_error, runtime, R2Score, cAvgError = self.LP_Distribution(cMax = r_total, iterate = True)
+                    xOpt.update(self.LP_Distribution(cMax = xOpt['r_total'], iterate = True))
+                    # EC, AC, c_error, runtime, R2Score, cAvgError = self.LP_Distribution(cMax = xOpt['r_total'], iterate = True)
                     print('SV:', self.Exp_SV)
                     print('AccDiff:', self.Exp_AccDiff)
-                    print('[P2]: CError = ', c_error, '%, R2Score = ', R2Score, '\n', EC, '\n -', AC, '\n =', abs(EC - AC), sep = '')
+                    print('[P2]: CError = ', xOpt['c_error'], '%, R2Score = ', xOpt['R2Score'], '\n',
+                          xOpt['EC'], '\n -', xOpt['AC'], '\n =', abs(xOpt['EC']-xOpt['AC']), sep = '')
             print('\n')
         else:
             print('RmMode = [1, ..., 5]!')
 
     def Ineq_Verify(self, sm = True, xOpt = np.zeros(0, int), verify = True, show = True): # 不等式驗證
-        const = list()
+        const = []
         VioNum = 0 # 違反不等式的次數
         IneqNum = 0 # 不等式總數
         if len(xOpt) == 0:
@@ -1169,11 +1111,11 @@ class Twophase_Predictive_Model_Pricing(object): # TPMP Class
         if verify:
             if show:
                 if sm:
-                    print('\nSM')
+                    print('SM')
                 else:
-                    print('\nSA')
+                    print('SA')
                 print('IneqNum: ', IneqNum, ', VioNum: ', VioNum, sep = '')
-                print('Violation rate: ', ftoi(VioNum/IneqNum, 100), '%', sep='') # 違規比例
+                print('Violation rate: ', ftoi(VioNum/IneqNum, 100), '%\n', sep='') # 違規比例
             return VioNum
         else:
             return const

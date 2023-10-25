@@ -9,11 +9,11 @@ import TPMP_ModelTraining as MT
 img_size = 32*32
 clf = MT.return_model('logistic', tol = 0.1, solver = 'liblinear', n_jobs = 1) # 以logistic建立分類模型
 
-def ReadImage(filename): # 讀原始檔
+def ReadImage(filename, dir_name = 'cifar-10-batches-py'): # 讀原始檔
     x_raw = np.zeros((0, 3072), int)
     rawdata, y_batch, imgName = {}, [], []
     for file in filename:
-        with open(file, 'rb') as f:
+        with open(dir_name+'/'+file, 'rb') as f:
             rawdata = pickle.load(f, encoding = 'bytes')
             x_raw = np.append(x_raw, rawdata[b'data'], axis = 0)
             y_batch += rawdata[b'labels']

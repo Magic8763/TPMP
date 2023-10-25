@@ -10,8 +10,6 @@ import scipy.special
 import random
 import pickle
 
-## In[shap_utils.py提供的函數]:
-
 from scipy.stats import logistic
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC, LinearSVC
@@ -142,16 +140,16 @@ class SupportedSV(object): # 模型訓練Class
         self.trained_count = 0
         self.getSV = getSV # 同步計算SV
         self.getAC = getAC # 同步計算準確度分布
-        self.cmb = list() # 輸出模型的訓練集
-        self.cmb_acc = list() # 輸出模型的準確度
-        self.cmb_len = list() # 輸出模型的大小分布
+        self.cmb = [] # 輸出模型的訓練集
+        self.cmb_acc = [] # 輸出模型的準確度
+        self.cmb_len = [] # 輸出模型的大小分布
         self.trainedTime = np.zeros(0, float) # 輸出模型的實際訓練時間
         self.selected_trainedTime = np.zeros(0, float) # 輸出模型的實際訓練時間
         if reboot: # 重新走訪與訓練模型實例
             self.full_score = -1 # 完整模型的準確度
-            self.all_cmb = list() # 所有模型實例的訓練集
-            self.all_cmb_acc = list() # 所有模型實例的準確度
-            self.all_cmb_len = list() #  所有模型實例的大小分布
+            self.all_cmb = [] # 所有模型實例的訓練集
+            self.all_cmb_acc = [] # 所有模型實例的準確度
+            self.all_cmb_len = [] #  所有模型實例的大小分布
             self.all_trainedTime = np.zeros(0, float) # 所有模型實例的實際訓練時間
         for i in range(0, self.train_size):
             self.cmb_len.append(np.zeros(0, int))
@@ -170,9 +168,8 @@ class SupportedSV(object): # 模型訓練Class
         else:
             return np.concatenate([self.x_train, self.x_test]), np.concatenate([self.y_train, self.y_test])
 
-    def combine(self, cut): # 原始資料分組分聚合
-        alist = list()
-        sta = 0
+    def combine(self, cut): # 原始資料分組聚合
+        alist, sta = [], 0
         for set_size in cut:
             end = int(set_size)
             alist.append(np.arange(start = sta, stop = end, step = 1))
@@ -254,11 +251,8 @@ class SupportedSV(object): # 模型訓練Class
     # 模型實例隨機抽樣(k輸出模型數, pref隨機抽樣範圍: 0=[0%:100%], 1=[50%:100%], -1=[0%:50%])
         cmb = list([self.full_idx])
         cmb_acc = list([self.full_score])
-        cmb_len = list()
-        for i in range(0, self.train_size-1):
-            cmb_len.append(np.zeros(0, int))
-        cmb_len.append(np.zeros(1, int))
-        allcmb = list()
+        cmb_len = [np.zeros(0, int) for _ in range(self.train_size-1)]+[np.zeros(1, int)]
+        allcmb = []
         sample_idx = np.zeros(0, int)
 #        for S_size in range(1, self.train_size+1):
 #            allcmb += list(combinations(np.arange(self.train_size), S_size))
@@ -309,9 +303,7 @@ class SupportedSV(object): # 模型訓練Class
     #                      k輸出模型數, reboot重啟模型訓練而不沿用先前訓練好的模型實例)
         queue = list([(self.full_idx, self.full_score, self.full_tt)])
         EnqueueTT = np.append(np.zeros(0, float), self.full_tt)
-        cmb_len = list()
-        for i in range(0, self.train_size):
-            cmb_len.append(np.zeros(0, int))
+        cmb_len = [np.zeros(0, int) for _ in range(self.train_size)]
         if reboot:
             self.all_cmb_adder(self.full_score, self.full_idx, self.train_size-1, self.full_tt)
             cmb_len[-1] = np.append(cmb_len[-1], len(self.all_cmb)-1)
@@ -321,7 +313,7 @@ class SupportedSV(object): # 模型訓練Class
         batch_end = len(queue)
         n = int(k)
         while len(queue) > 0:
-            SubModel = list()
+            SubModel = []
             if BFS:
                 if RD:
                     S_xi_idx = random.sample(range(0, batch_end), 1)[0]
@@ -411,11 +403,8 @@ class SupportedSV(object): # 模型訓練Class
     def RandomPick(self, k = 1, reboot = False): # 隨機版本模型走訪與輸出
         if reboot:
             self.Model_Selection()
-        cmb = list()
-        cmb_acc = list()
-        cmb_len = list()
-        for i in range(0, self.train_size):
-            cmb_len.append(np.zeros(0, int))
+        cmb, cmb_acc = [], []
+        cmb_len = [np.zeros(0, int) for _ in range(self.train_size)]
         cmb_utility = np.zeros((0, self.train_size), float)
         cmb_marginal = np.zeros((0, self.train_size), float)
         runtime = 0
@@ -491,17 +480,19 @@ def RunMS(ClassObj, search = 0, SEQ = True, RD = False, threshold = 0, k = 1, re
     if search != 2:
         starttime = time.time()
         BFS = (search == 0)
-        bf_cmb, bf_cmb_acc, bf_cmb_len, bf_utility, bf_marginal = ClassObj.Model_Selection(BFS, SEQ, RD, threshold, k, reboot)
-        runtime = time.time() - starttime 
+        cmb, cmb_acc, cmb_len, utility, marginal = ClassObj.Model_Selection(BFS, SEQ, RD, threshold, k, reboot)
+        runtime = time.time()-starttime
         if not reboot:
             runtime += sum(ClassObj.trainedTime)
     else:
-        bf_cmb, bf_cmb_acc, bf_cmb_len, bf_utility, bf_marginal, runtime = ClassObj.RandomPick(k = k, reboot = reboot) # 隨機篩選模型
-    ClassObj.plot()
-    print('\nTrained Models:', ClassObj.trained_count)
+        cmb, cmb_acc, cmb_len, utility, marginal, runtime = ClassObj.RandomPick(k = k, reboot = reboot) # 隨機篩選模型
+    res = {'cmb': cmb, 'cmb_acc': cmb_acc, 'cmb_len': cmb_len, 'marginal': marginal, 
+           'utility': utility, 'SSV': np.sum(utility, axis = 0), 'runtime': runtime} # 邊際貢獻矩陣utility的行總和 = 版本模型的支持SV
+    #ClassObj.plot()
+    print('Trained Models: ', ClassObj.trained_count, ', Output Models: ', len(cmb), sep='') # 找出k個合適的模型實例前的模型實例訓練總數
     if not iterate:
-        print('[Model Selection] ML_', len(bf_cmb), ': ', runtime, ' sec.\n', sep = '')
-    return bf_cmb, bf_cmb_acc, bf_cmb_len, bf_utility, bf_marginal, runtime
+        print('[Model Selection] ML_', len(cmb), ': ', runtime, ' sec.\n', sep = '')
+    return res
 
 # In[計算訓練集的真實SV]:
 
@@ -509,7 +500,7 @@ def RunSV(ClassObj, getAC = False):
     starttime = time.time()
     fm_vals, fm_vals_uf, fm_acc_count = ClassObj.Get_ShapleyValue(getAC = getAC)
     runtime = time.time() - starttime
-    print('\nTrained Models:', ClassObj.trained_count)
+    print('Trained Models:', ClassObj.trained_count)
     print('[True Shapley]: ', runtime, ' sec.\n', sep='')
     return fm_vals, fm_vals_uf, fm_acc_count
 
@@ -526,9 +517,13 @@ def RW_ClassObj(obj = None, wtire = False, dir_name = '', name = 'ClassObj', dat
         with open(dir_name+'/'+name+'.pkl', 'wb') as file:
             pickle.dump(obj, file)
     else:
-        with open(dir_name+'/'+name+'.pkl', 'rb') as file:
-            obj = pickle.load(file)
-        return obj
+        try:
+            with open(dir_name+'/'+name+'.pkl', 'rb') as file:
+                obj = pickle.load(file)
+            return obj
+        except:
+            print('ClassObj.pkl open error!')
+            return None
 
 # In[假設曲線範例]:
 
