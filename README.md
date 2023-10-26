@@ -7,7 +7,7 @@
 
 A Framework of Predictive Model Pricing.
 
-Code for implementation of "A Framework of Two-phase Predictive Model Pricing for Revenue Maximization and Distribution Optimization".
+Code for implementation of ["A Framework of Two-phase Predictive Model Pricing for Revenue Maximization and Distribution Optimization"](https://hdl.handle.net/11296/4w3p68).
 
 ## Abstract
 
