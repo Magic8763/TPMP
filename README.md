@@ -24,7 +24,7 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 - `TPMP_main.py`: 程式主介面，包含以模擬資料測試函數功能的範例實驗
 - `TPMP_Experiments.py`: 完整的迭代定價實驗
 - `TPMP_Preprocessing.py`: 前處理相關功能
-- `TPMP_ModelTraining.py`: 模型訓練相關功能，部分函數參考自 [Data Shapley: Equitable Valuation of Data for Machine Learning](https://github.com/amiratag/DataShapley)
+- `TPMP_ModelTraining.py`: 模型訓練相關功能
 - `TPMP_Class.py`: TPMP 類別與函數
 - `TPMP_Plot.py`: 實驗結果繪圖
 
@@ -39,8 +39,11 @@ Code for implementation of "A Framework of Two-phase Predictive Model Pricing fo
 - `x_raw101.csv`, `y_raw101.csv`
   - 測試功能的模擬資料
 
+## Reference
+- [Data Shapley: Equitable Valuation of Data for Machine Learning](https://github.com/amiratag/DataShapley)
+
 ## Authors
-* **[Magic8763](https://github.com/Magic8763)**
+- **[Magic8763](https://github.com/Magic8763)**
 
 ## License
 This project is licensed under the [MIT License](https://github.com/Magic8763/TPMP/blob/main/LICENSE)
