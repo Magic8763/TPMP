@@ -5,11 +5,11 @@
 ![shields](https://img.shields.io/badge/python-3.8%2B-blue?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
 
-A Framework of Predictive Model Pricing.
+[收益最大化和分配最佳化之兩階段預測模型定價框架](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
 
-Code for implementation of ["A Framework of Two-phase Predictive Model Pricing for Revenue Maximization and Distribution Optimization"](https://hdl.handle.net/11296/4w3p68).
 
-## Abstract
+
+
 
 
 ## Presentation
