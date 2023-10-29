@@ -18,20 +18,35 @@
 
 
 其中我們關注將預訓練模型作為商品販售的模型市集，提出以模型準確度與訓練集為依據的兩階段預測模型定價框架。第一階段計算在不違反套利的條件下能最大化銷售收益的模型價格；第二階段則依據售出模型之訓練集分配給資料提供者公平的回饋報酬。
+
 ![image](https://github.com/Magic8763/TPMP/blob/main/img/模型市集角色互動.jpg)
 
 
 註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
 
 ## Presentation
+**Arbitrage-Free Pricing**
+
+定價階段: CIP
+
+**Revenue Maximization**
+
+**「模型價格必須滿足所有無套利約束條件才會是不可套利的」**，為了在此前提下最大化銷售收益，我們選擇將部分模型實例從銷售清單中移除，藉此減少約束條件對其餘模型價格的限制。我們提出兩種效率與效果兼具的貪婪方法，依據所屬約束條件對價格的限制程度來決定移除何者有助於改善預期收益。
+- `MinCover`: 優先移除會形成較多約束條件的模型實例
+- `MaxImprove`: 優先移除可改進收益較高的模型實例
+  - 可改進收益 = 所屬約束條件造成的收益損失估計值 - 該模型本身價格
+![image](https://github.com/Magic8763/TPMP/blob/main/img/模型市集角色互動.jpg) # 移除MAX欄位與title的(BFS)
+![image](https://github.com/Magic8763/TPMP/blob/main/img/模型市集角色互動.jpg)
+
+無論是`MinCover`或`MaxImprove`方法，在原始定價`Base`的收益百分比隨著給定模型數增加而逐漸降低的情況下，二者仍能將預期收益穩定維持在較高的狀態，其中又以`MaxImprove`更勝一籌。
+
+**Fair Distribution**
+
+分配階段: 支持SV
 
 我們提出基於約束的迭代定價方法具有線性對數的時間複雜度與收益最大化的保證。
 我們提出模型牴觸移除的概念及兩種實現概念的收益優化方法，二者均透過容許移除少量模型實例來達到提高收益的無套利定價，實驗結果顯示收益優化後都提升到最大可能收益的九成以上。
 我們提出的支持夏普利值僅考慮參與者貢獻皆非負而且並非全為零的模型實例，據此分配回饋報酬的方法仍可滿足夏普利公平性的規範。
-
-1. 定價階段: CIP
-2. 定價階段: 移除特色
-3. 分配階段: 支持SV
 
 ## Prerequisites
 - Python3, NumPy, Pandas, Scikit-learn, Matplotlib
@@ -42,8 +57,8 @@
 - `TPMP_main.py`: 程式主介面，包含以模擬資料測試函數功能的範例實驗
 - `TPMP_Experiments.py`: 完整的迭代定價實驗
 - `TPMP_Preprocessing.py`: 前處理相關功能
-- `TPMP_ModelTraining.py`: 模型訓練相關功能
-- `TPMP_Class.py`: TPMP 類別與函數
+- `TPMP_ModelTraining.py`: 支持 SV 類別，包含模型訓練與資料集效用評估函數
+- `TPMP_Class.py`: TPMP 類別，包含無套利定價與收益分配函數
 - `TPMP_Plot.py`: 實驗結果繪圖
 
 **Variable**
