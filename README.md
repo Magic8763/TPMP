@@ -19,7 +19,7 @@
 
 其中我們關注將預訓練模型作為商品販售的模型市集，提出以模型準確度與訓練集為依據的兩階段預測模型定價框架。第一階段計算在不違反套利的條件下能最大化銷售收益的模型價格；第二階段則依據售出模型之訓練集分配給資料提供者公平的回饋報酬。
 
-![image](https://github.com/Magic8763/TPMP/blob/main/img/模型市集角色互動.jpg)
+![image](https://github.com/Magic8763/TPMP/blob/main/img/model_market.jpg)
 
 
 註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
@@ -35,8 +35,8 @@
 - `MinCover`: 優先移除會形成較多約束條件的模型實例
 - `MaxImprove`: 優先移除可改進收益較高的模型實例
   - 可改進收益 = 所屬約束條件造成的收益損失估計值 - 該模型本身價格
-![image](https://github.com/Magic8763/TPMP/blob/main/img/模型市集角色互動.jpg) # 移除MAX欄位與title的(BFS)
-![image](https://github.com/Magic8763/TPMP/blob/main/img/模型市集角色互動.jpg)
+![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue.jpg)
+![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue_ratio.jpg)
 
 無論是`MinCover`或`MaxImprove`方法，在原始定價`Base`的收益百分比隨著給定模型數增加而逐漸降低的情況下，二者仍能將預期收益穩定維持在較高的狀態，其中又以`MaxImprove`更勝一籌。
 
