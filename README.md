@@ -25,22 +25,27 @@
 註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
 
 ## Presentation
-**Arbitrage-Free Pricing**
+**Phase 1: Arbitrage-Free Pricing**
 
-定價階段: CIP
+**「模型價格必須滿足所有無套利約束條件才會是不可套利的」**。每當銷售方有新模型被加入商品清單時，由該模型形成的約束條件將一併套用在所有同樣作為待售商品的模型實例上，這導致部分模型必須調降其售價以避免買方的套利行為。在滿足無套利約束的前提下計算具有最大預期收益之模型價格的定價方式稱為**無套利定價**。
 
-**Revenue Maximization**
+TPMP 採用基於個別模型所屬約束條件計算模型價格的貪婪方法`CIP`，透過從價格上限開始迭代調降模型價格的定價方式，找出符合約束條件的最高售價。
 
-**「模型價格必須滿足所有無套利約束條件才會是不可套利的」**，為了在此前提下最大化銷售收益，我們選擇將部分模型實例從銷售清單中移除，藉此減少約束條件對其餘模型價格的限制。我們提出兩種效率與效果兼具的貪婪方法，依據所屬約束條件對價格的限制程度來決定移除何者有助於改善預期收益。
+![image](https://github.com/Magic8763/TPMP/blob/main/img/arbitrage-free_pricing.jpg)
+
+如圖所示，與採用循序最小平方規劃法`SLSQP`的非線性規劃求解器相比，`CIP`能有效計算出滿足無套利約束的模型價格最佳解，同時它的計算效率又比`SLSQP`快了將近兩個數量級。
+
+**Phase 1+: Revenue Maximization**
+
+為了在滿足無套利約束的前提下最大化銷售收益，我們選擇將部分模型實例從商品清單中移除，藉此減少約束條件對剩餘模型的價格限制。TTPMP 採用兩種效率與效果兼具的貪婪方法，依據所屬約束條件對價格的限制程度來決定移除何者有助於改善預期收益。
 - `MinCover`: 優先移除會形成較多約束條件的模型實例
 - `MaxImprove`: 優先移除可改進收益較高的模型實例
   - 可改進收益 = 所屬約束條件造成的收益損失估計值 - 該模型本身價格
-![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue.jpg)
-![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue_ratio.jpg)
+![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue_maximization.jpg)
 
 無論是`MinCover`或`MaxImprove`方法，在原始定價`Base`的收益百分比隨著給定模型數增加而逐漸降低的情況下，二者仍能將預期收益穩定維持在較高的狀態，其中又以`MaxImprove`更勝一籌。
 
-**Fair Distribution**
+**Phase 2: Fair Distribution**
 
 分配階段: 支持SV
 
