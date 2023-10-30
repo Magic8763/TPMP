@@ -21,7 +21,6 @@
 
 ![image](https://github.com/Magic8763/TPMP/blob/main/img/model_market.jpg)
 
-
 註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
 
 ## Presentation
@@ -41,6 +40,7 @@ TPMP 採用基於個別模型所屬約束條件計算模型價格的貪婪方法
 - `MinCover`: 優先移除會形成較多約束條件的模型實例
 - `MaxImprove`: 優先移除可改進收益較高的模型實例
   - 可改進收益 = 所屬約束條件造成的收益損失估計值 - 該模型本身價格
+
 ![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue_maximization.jpg)
 
 無論是`MinCover`或`MaxImprove`方法，在原始定價`Base`的收益百分比隨著給定模型數增加而逐漸降低的情況下，二者仍能將預期收益穩定維持在較高的狀態，其中又以`MaxImprove`更勝一籌。
