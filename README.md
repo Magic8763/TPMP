@@ -72,12 +72,12 @@ TPMP 採用基於支持夏普利值等比分配銷售收益的方式，我們在
 
 ## Description
 **Program**
-- `TPMP_Build.py`: 資料前處理，包含資料樣本分組與訓練模型實例
-- `TPMP_main.py`: 程式主介面，包含以模擬資料測試函數功能的範例實驗
-- `TPMP_Experiments.py`: 完整的迭代定價實驗
-- `TPMP_Preprocessing.py`: 前處理相關功能
-- `TPMP_ModelTraining.py`: 支持 SV 類別，包含模型訓練與資料集效用評估函數
-- `TPMP_Class.py`: TPMP 類別，包含無套利定價與收益分配函數
+- `TPMP_Preprocessing.py`: 資料前處理函數
+- `TPMP_ModelTraining.py`: 模型訓練與資料集效用評估的相關功能
+- `TPMP_Build.py`: 前處理與模型訓練的執行流程
+- `TPMP_Class.py`: TPMP 類別，包含無套利定價與收益分配的完整功能
+- `TPMP_main.py`: 以模擬資料測試函數功能的範例實驗
+- `TPMP_Experiments.py`: 完整的兩階段定價實驗
 - `TPMP_Plot.py`: 實驗結果繪圖
 
 **Variable**
