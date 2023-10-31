@@ -11,7 +11,7 @@
 
 有鑑於上述挑戰，我們提出以模型準確度與訓練集為依據的兩階段預測模型定價框架 TPMP。第一階段會計算在不違反套利的條件下能最大化銷售收益的模型價格；第二階段則以售出模型之訓練集為依據，分配給所屬資料提供者公平的回饋報酬。
 
-![image](https://github.com/Magic8763/TPMP/blob/main/img/model_market.jpg)
+<p align="center"><img src="https://github.com/Magic8763/TPMP/blob/main/img/model_market.jpg"></p>
 
 註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
 
@@ -32,7 +32,7 @@
 
 TPMP 採用基於個別模型所屬約束條件計算模型價格的貪婪方法`CIP`，透過從價格上限開始迭代調降模型價格的定價方式，找出符合約束條件的最高售價。
 
-![image](https://github.com/Magic8763/TPMP/blob/main/img/arbitrage-free_pricing.jpg)
+<p align="center"><img src="https://github.com/Magic8763/TPMP/blob/main/img/arbitrage-free_pricing.jpg"></p>
 
 與採用循序最小平方規劃法`SLSQP`的非線性規劃求解器相比，`CIP`能有效計算出滿足無套利約束的模型價格最佳解，同時它的計算效率又比`SLSQP`快了將近兩個數量級。
 
@@ -45,7 +45,7 @@ TPMP 採用兩種效率與效果兼具的貪婪方法，依據所屬約束條件
 - `MaxImprove`：優先移除可改進收益較高的模型實例
   - 可改進收益 = 所屬約束條件造成的收益損失估計值 - 該模型本身價格
 
-![image](https://github.com/Magic8763/TPMP/blob/main/img/revenue_maximization.jpg)
+<p align="center"><img src="https://github.com/Magic8763/TPMP/blob/main/img/revenue_maximization.jpg"></p>
 
 如圖所示，在原始定價結果`Base`的收益百分比隨著給定模型數增加而逐漸降低的情況下，上述二方法仍能將預期收益穩定維持在較高的狀態，其中又以`MaxImprove`更勝一籌。
 
