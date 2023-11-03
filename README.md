@@ -43,7 +43,7 @@ TPMP 採用基於個別模型所屬約束條件計算模型價格的貪婪方法
 TPMP 採用兩種效率與效果兼具的貪婪方法，依據所屬約束條件對價格的限制程度來決定移除何者有助於改善預期收益。
 - `MinCover`：優先移除會形成較多約束條件的模型實例
 - `MaxImprove`：優先移除可改進收益較高的模型實例
-  - 可改進收益 = 所屬約束條件造成的收益損失估計值 - 該模型本身價格
+  - 可改進收益 = 由模型形成之約束條件造成的收益損失估計值 – 該模型的價格上限
 
 <p align="center"><img src="https://github.com/Magic8763/TPMP/blob/main/img/revenue_maximization.jpg"></p>
 
