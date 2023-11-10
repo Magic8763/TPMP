@@ -34,7 +34,7 @@ TPMP 採用基於個別模型所屬約束條件計算模型價格的貪婪方法
 
 <p align="center"><img src="https://github.com/Magic8763/TPMP/blob/main/img/arbitrage-free_pricing.jpg"></p>
 
-與採用循序最小平方規劃法`SLSQP`的非線性規劃求解器相比，`CIP`能有效計算出滿足無套利約束的模型價格最佳解，同時它的計算效率又比`SLSQP`快了將近兩個數量級。
+與採用循序最小平方規劃法`SLSQP`的非線性規劃求解器相比，`CIP`同樣能有效計算出滿足無套利約束的模型價格最佳解，但計算效率卻比`SLSQP`快了將近兩個數量級。
 
 **Phase 1+: Revenue Maximization**
 
