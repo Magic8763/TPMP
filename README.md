@@ -1,4 +1,4 @@
-![image](https://github.com/Magic8763/TPMP/assets/114419914/33ad1363-eecd-470a-b136-0f6f0c2659c0)# Two-phase Predictive Model Pricing
+# Two-phase Predictive Model Pricing
 ![](https://img.shields.io/github/stars/magic8763/TPMP)
 ![](https://img.shields.io/github/watchers/magic8763/TPMP)
 ![](https://img.shields.io/github/forks/magic8763/TPMP)
