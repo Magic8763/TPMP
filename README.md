@@ -21,7 +21,7 @@ TPMP 的特色如下：
 ## Presentation
 **Preparation: Model Training**
 
-使用羅吉斯回歸分類器 (Logistic Regression) 作為預設建模演算法。
+使用羅吉斯迴歸分類器 (Logistic Regression) 作為預設建模演算法。
 
 在固定模型參數的情況下，將數個資料集聯集為模型實例的訓練集，同時計算各資料集的貢獻程度 (Utility)。
 
