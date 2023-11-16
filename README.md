@@ -1,17 +1,22 @@
-F# Two-phase Predictive Model Pricing
+# Two-phase Predictive Model Pricing
 ![](https://img.shields.io/github/stars/magic8763/TPMP)
 ![](https://img.shields.io/github/watchers/magic8763/TPMP)
 ![](https://img.shields.io/github/forks/magic8763/TPMP)
 ![shields](https://img.shields.io/badge/python-3.8%2B-blue?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
 
-由於各行各業對於 AI 應用的需求與日俱增，以預訓練模型提供即時 AI 服務的企業平台因其高度的便利性，比起販售資料集的傳統資料市集更受市場用戶喜愛，但前者普遍仍採用訂閱制或依次付費等簡易的計價方案。若模型商品的性能遠高於用戶的期望，將迫使用戶付出高於其預算的金額或是放棄購買。同時銷售方也會受簡單的定價機制限制而無法進一步提高收益，甚至處在可能被套利 (Arbitrage) 的風險中。
+由於各行各業對於 AI 應用的需求與日俱增，以預訓練模型提供即時 AI 服務的企業平台因其高度的便利性，比起販售資料集的傳統資料市集更受市場用戶喜愛，但前者普遍仍採用訂閱制或依次付費等簡易的計價方案。若模型商品的性能遠高於用戶的期望，將迫使用戶付出高於其預算的金額或是放棄購買。同時銷售方也會受簡單的定價機制限制而無法進一步提高收益，甚至處在可能被套利 (*Arbitrage*) 的風險中。
 
-[先前的研究](https://lchen001.github.io/papers/2019_Nimbus_SIGMOD.pdf)提出以預訓練模型作為商品販售而非資料集的資料市集變體，稱為模型市集。希望從買賣雙方及市場仲介商這三個角度研究如何防止套利同時最大化銷售收益。
+[先前的研究](https://lchen001.github.io/papers/2019_Nimbus_SIGMOD.pdf)提出以預訓練模型作為商品販售而非資料集的資料市集變體，稱為模型市集。作者從買賣雙方及市場仲介商這三個角度研究如何防止套利(*Arbitrage*)並最大化銷售收益。
 
-有鑑於上述挑戰，我們提出以模型準確度和訓練集為依據的兩階段預測模型定價框架 TPMP。第一階段基於模型準確度和訓練集計算能最大化銷售收益且不可套利的模型價格；第二階段依據售出模型之訓練集效用分配給所屬資料提供者公平的回饋報酬。
+有鑑於上述挑戰，我們提出以模型準確度和訓練集為依據的兩階段預測模型定價框架 TPMP。第一階段基於模型準確度和訓練集計算能最大化銷售收益且不可套利的模型價格；第二階段依據售出模型之訓練集效用分配給所屬資料提供者分配公平的回饋報酬。
 
 <p align="center"><img src="https://github.com/Magic8763/TPMP/blob/main/img/model_market.jpg"></p>
+
+TPMP 的特色如下：
+1. 大幅縮短定價時間：TPMP 的定價效率比使用非線性規劃求解器的定價方式快上兩個數量級
+2. 極大化預期收益：TPMP 的定價結果可達到最大可能收益的九成以上
+3. 公平收益分配：採用客觀公平且可執行的方式分配銷售利潤
 
 註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
 
