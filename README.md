@@ -16,7 +16,9 @@ TPMP 的特色如下：
 2. 極大化預期收益：TPMP 的定價結果可達到最大可能收益的九成以上
 3. 公平收益分配：採用客觀公平且可執行的方式分配銷售利潤
 
-註：本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
+#本專案為[「收益最大化和分配最佳化之兩階段預測模型定價框架」](https://hdl.handle.net/11296/4w3p68)的實作程式碼。
+
+#本論文已正式發表於[第27屆人工智慧與應用研討會 (TAAI2022)](https://taai2022.github.io/dprogram.html)。
 
 ## Presentation
 **Preparation: Model Training**
