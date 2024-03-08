@@ -78,6 +78,8 @@ TPMP 採用基於支持夏普利值的等比分配方式來分配銷售利潤，
 - `TPMP_Experiments.py`: 完整的兩階段定價實驗
 - `TPMP_Plot.py`: 實驗結果繪圖
 
+#建議使用 **Spyder IDE** 逐段運行
+
 **Variable**
 - `V_acc.pkl`: 預設的市場調查結果-模型價格上限
 - `D_acc.pkl`: 預設的市場調查結果-市場需求分布
